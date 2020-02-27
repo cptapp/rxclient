@@ -2,8 +2,8 @@
 
 ```javascript
 const identity = {
-  username: 'cptapples',
-  password: 'oauth:busgt1w2vx00xyvfvinyycjrbpqg6e'
+  username: 'username',
+  password: 'oauth:password'
 }
 
 const client = new Client(identity)
