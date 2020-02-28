@@ -46,14 +46,14 @@ class Client {
   private _leave = new Subject<string>()
   private _send = new Subject<string>()
 
-  public join = (channel: string): void => this._join.next(channel)
-  public leave = (channel: string): void => this._leave.next(channel)
-  private send = (data: string): void => this._send.next(data)
+  public join = (channel: string) => this._join.next(channel)
+  public leave = (channel: string) => this._leave.next(channel)
+  private send = (data: string) => this._send.next(data)
 
   public rawMessages = new Subject<string>()
   public closes = new Subject<Message>()
   public errors = new Subject<string>()
-  public messages = this.rawMessages.pipe(map(raw => parser.message(raw)))
+  public messages = this.rawMessages.pipe(map(parser.message))
   public pings = this.messages.pipe(filter(({ code }) => code === codes.ping))
 
   public connetions = this.messages.pipe(
@@ -101,8 +101,8 @@ class Client {
     readonly server = 'wss://irc-ws.chat.twitch.tv'
   ) {
     this.pings.forEach(() => this.send('PONG :tmi.twitch.tv'))
-    this.joined.forEach(channel => this.channels.add(channel))
-    this.left.forEach(channel => this.channels.delete(channel))
+    this.joined.forEach(this.channels.add)
+    this.left.forEach(this.channels.delete)
 
     // this.rawMessages.forEach(console.log)
 
@@ -118,10 +118,10 @@ class Client {
       .forEach(channel => this.send(`PART ${channel}`))
 
     this._send.pipe(delay(300)).forEach(data => {
-      if (this.socket) {
-        this.socket.send(data)
+      if (!this.getSocket) {
+        this.socket?.send(data)
       } else {
-        this.errors.next('not connected: ' + data)
+        this.errors.next('not connected ' + data)
       }
     })
   }
@@ -151,10 +151,7 @@ class Client {
   }
 
   public disconnect() {
-    if (this.socket) {
-      this.socket.close()
-    }
-
+    this.socket?.close()
     this.channels.clear()
   }
 

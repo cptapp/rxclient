@@ -1,14 +1,14 @@
 {
   "name": "rxclient",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "build/Client.js",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf ./build",
-    "build": "npx tsc -p .",
-    "postbuild": "npm run test",
+    "build": "tsc -p .",
     "watch": "tsc -w -p .",
-    "test": "ava"
+    "test": "ava",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/ws": "^7.2.2",
