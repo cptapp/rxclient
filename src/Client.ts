@@ -118,7 +118,7 @@ class Client {
       .forEach(channel => this.send(`PART ${channel}`))
 
     this._send.pipe(delay(300)).forEach(data => {
-      if (this.getSocket) {
+      if (this.socket) {
         this.socket?.send(data)
       } else {
         this.errors.next('not connected ' + data)
